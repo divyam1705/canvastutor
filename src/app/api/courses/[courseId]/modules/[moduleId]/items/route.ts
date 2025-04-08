@@ -1,13 +1,14 @@
 import { NextResponse } from "next/server";
 import { CanvasModuleItem, CanvasAPIError } from "@/types/canvas";
 
-export async function GET(
-  request: Request,
-  { params }: { params: { courseId: string; moduleId: string } }
-) {
+type Params = {
+  courseId: string;
+  moduleId: string;
+};
+export async function GET(request: Request, { params }: { params: Params }) {
+  const { courseId, moduleId } = params;
   const { searchParams } = new URL(request.url);
   const apiKey = searchParams.get("apiKey");
-  const { courseId, moduleId } = params;
 
   if (!apiKey) {
     return NextResponse.json({ error: "API key is required" }, { status: 400 });
@@ -33,6 +34,7 @@ export async function GET(
 
     const items: CanvasModuleItem[] = await response.json();
     return NextResponse.json(items);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
     return NextResponse.json(
       { error: "Failed to fetch module items" },
